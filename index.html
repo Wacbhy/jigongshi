@@ -13,20 +13,12 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#121218;
-  --surface:#1e1e28;
-  --surface-2:#282836;
-  --surface-3:#32324a;
-  --border:#3a3a50;
-  --accent:#f0c040;
-  --accent-dim:#a08030;
+  --bg:#121218;--surface:#1e1e28;--surface-2:#282836;--surface-3:#32324a;
+  --border:#3a3a50;--accent:#f0c040;--accent-dim:#a08030;
   --accent-glow:rgba(240,192,64,0.18);
-  --text:#f4f0e8;
-  --text-muted:#9a96a8;
-  --success:#5edc80;
-  --danger:#f06060;
-  --info:#6ab0f8;
-  --purple:#c090f0;
+  --text:#f4f0e8;--text-muted:#9a96a8;
+  --success:#5edc80;--danger:#f06060;
+  --info:#6ab0f8;--purple:#c090f0;
   --radius:12px;
 }
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -50,14 +42,13 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .accent-gold{--card-accent:var(--accent)}.accent-green{--card-accent:var(--success)}
 .accent-blue{--card-accent:var(--info)}.accent-purple{--card-accent:var(--purple)}
 
-/* Form Section — Original Style */
+/* Form Section */
 .form-section{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin-bottom:28px;animation:fadeUp .6s ease .15s both}
 .form-section h2{font-size:15px;font-weight:600;margin-bottom:18px;display:flex;align-items:center;gap:8px}
 .form-section h2::before{content:'';width:3px;height:15px;background:var(--accent);border-radius:2px}
 .form-section h2.type-tx::before{background:var(--purple)}
 .form-section h2.type-zb::before{background:var(--info)}
 
-/* Type Tabs */
 .type-tabs{display:flex;gap:0;margin-bottom:18px;background:var(--bg);border:1px solid var(--border);border-radius:10px;overflow:hidden}
 .type-tab{flex:1;padding:11px 0;text-align:center;font-size:13px;font-weight:500;color:var(--text-muted);cursor:pointer;transition:all .2s;border-right:1px solid var(--border);user-select:none}
 .type-tab:last-child{border-right:none}
@@ -67,11 +58,8 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .type-tab.active[data-type="tiaoxiu"]{background:var(--purple)}
 .type-tab.active[data-type="zhuanban"]{background:var(--info)}
 
-/* Form rows */
 .frow{display:grid;gap:10px;margin-bottom:10px}
-.frow.c3{grid-template-columns:1fr 1fr 1fr}
-.frow.c4{grid-template-columns:1fr 1fr 1fr 1fr}
-.frow.c2{grid-template-columns:1fr 1fr}
+.frow.c3{grid-template-columns:1fr 1fr 1fr}.frow.c4{grid-template-columns:1fr 1fr 1fr 1fr}.frow.c2{grid-template-columns:1fr 1fr}
 .fg{display:flex;flex-direction:column;gap:4px}
 .fg label{font-size:11px;color:var(--text-muted);letter-spacing:.3px}
 .fg input{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 12px;color:var(--text);font-family:'Space Mono',monospace;font-size:13px;outline:none;transition:border-color .2s,box-shadow .2s;width:100%}
@@ -82,12 +70,10 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .shift-chips label{font-size:11px;color:var(--text-muted);margin-right:2px}
 .sc{background:var(--surface-2);border:1px solid var(--border);color:var(--text-muted);font-size:11px;padding:5px 12px;border-radius:16px;cursor:pointer;font-family:'Noto Sans SC',sans-serif;transition:all .2s}
 .sc:hover,.sc.on{border-color:var(--accent-dim);color:var(--accent);background:var(--accent-glow)}
-
 .info-box{background:rgba(192,144,240,.06);border:1px solid rgba(192,144,240,.2);border-radius:8px;padding:12px 14px;margin-bottom:14px;font-size:12px;color:var(--text-muted);line-height:1.7}
 .info-box strong{color:var(--purple)}
 .info-box.info-blue{background:rgba(106,176,248,.06);border-color:rgba(106,176,248,.2)}
 .info-box.info-blue strong{color:var(--info)}
-
 .form-actions{display:flex;gap:10px;margin-top:16px}
 .btn{padding:11px 22px;border:none;border-radius:8px;font-family:'Noto Sans SC',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;letter-spacing:.3px}
 .btn-gold{background:linear-gradient(135deg,var(--accent),#d4a020);color:#111;flex:1}
@@ -123,37 +109,92 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .dot.d-n{background:var(--accent)}.dot.d-t{background:var(--purple)}.dot.d-z{background:var(--info)}
 .cal-day.has-rec{font-weight:600}
 
-/* Day Detail */
+/* Day Detail — Detailed Cards */
 .day-detail{margin-top:12px;animation:fadeUp .25s ease}
 .day-detail.hidden{display:none}
-.dd-header{display:flex;align-items:center;justify-content:space-between;padding:10px 4px 10px;flex-wrap:wrap;gap:8px}
+
+.dd-header{display:flex;align-items:center;justify-content:space-between;padding:10px 4px 12px;flex-wrap:wrap;gap:8px}
 .dd-header .dd-date{font-size:15px;font-weight:600}
 .dd-header .dd-weekday{color:var(--text-muted);font-size:13px;margin-left:8px}
-.dd-header .dd-total{font-family:'Space Mono',monospace;font-size:13px;color:var(--accent);display:flex;gap:12px}
+.dd-header .dd-total{font-family:'Space Mono',monospace;font-size:13px;color:var(--accent);display:flex;gap:14px}
 .dd-header .dd-total span{white-space:nowrap}
 
-.dd-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:8px;display:flex;align-items:center;gap:12px;position:relative;transition:border-color .2s}
-.dd-card::before{content:'';position:absolute;left:0;top:10px;bottom:10px;width:3px;border-radius:0 2px 2px 0}
+/* Detail Card — full layout like original */
+.dd-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius);padding:18px 20px;margin-bottom:10px;
+  display:grid;grid-template-columns:1fr auto;align-items:center;gap:14px;
+  position:relative;transition:border-color .2s;animation:slideIn .3s ease;
+}
+.dd-card::before{content:'';position:absolute;left:0;top:12px;bottom:12px;width:3px;border-radius:0 2px 2px 0}
 .dd-card.t-n::before{background:var(--accent)}
 .dd-card.t-t::before{background:var(--purple)}
 .dd-card.t-z::before{background:var(--info)}
 .dd-card:hover{border-color:var(--accent-dim)}
-.dd-left{padding-left:10px;flex:1;min-width:0}
-.dd-type{font-size:12px;font-weight:600;margin-bottom:4px}
-.dd-type.c-g{color:var(--accent)}.dd-type.c-p{color:var(--purple)}.dd-type.c-b{color:var(--info)}
-.dd-info{font-size:11px;color:var(--text-muted);display:flex;gap:6px;flex-wrap:wrap;align-items:center;line-height:1.6}
-.dd-info .sep{color:var(--border);font-size:10px}
-.dd-right{text-align:right;min-width:72px}
-.dd-hours{font-family:'Space Mono',monospace;font-size:16px;font-weight:700}
-.dd-earning{font-family:'Space Mono',monospace;font-size:16px;font-weight:700;color:var(--accent)}
-.dd-lbl{font-size:10px;color:var(--text-muted)}
-.dd-del{background:none;border:none;color:var(--text-muted);font-size:14px;cursor:pointer;padding:4px;opacity:.35;transition:all .2s;flex-shrink:0}
+
+.dd-card-body{padding-left:10px;min-width:0}
+
+/* Row 1: type label */
+.dd-type-row{display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap}
+.dd-type-label{font-size:13px;font-weight:600}
+.dd-type-label.c-g{color:var(--accent)}
+.dd-type-label.c-p{color:var(--purple)}
+.dd-type-label.c-b{color:var(--info)}
+.dd-weekday-sm{font-size:12px;color:var(--text-muted)}
+
+/* Row 2: time + all badges */
+.dd-detail-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px}
+.dd-time{font-family:'Space Mono',monospace;font-size:13px;color:var(--text-muted)}
+.dd-time .arrow{margin:0 5px;color:var(--border)}
+
+.dd-badge{
+  display:inline-flex;align-items:center;gap:4px;
+  font-size:11px;color:var(--text-muted);
+  background:var(--surface-2);padding:2px 8px;
+  border-radius:4px;white-space:nowrap;
+}
+.dd-badge.badge-deduct{color:var(--danger);background:rgba(240,96,96,.1)}
+.dd-badge.badge-rest{color:var(--info);background:rgba(106,176,248,.1)}
+.dd-badge.badge-note{color:var(--accent-dim);background:var(--accent-glow)}
+.dd-badge.badge-tx{color:var(--purple);background:rgba(192,144,240,.1);font-weight:500}
+.dd-badge.badge-zb{color:var(--info);background:rgba(106,176,248,.1);font-weight:500}
+.dd-badge.badge-orig{color:var(--info);background:rgba(106,176,248,.08)}
+
+/* Row 3: tx reason (for tiaoxiu) */
+.dd-tx-info{font-size:12px;color:var(--text-muted);padding-left:10px}
+
+/* Right side: hours + earning */
+.dd-right{text-align:right;min-width:88px;display:flex;flex-direction:column;gap:2px}
+.dd-hours-val{font-family:'Space Mono',monospace;font-size:17px;font-weight:700}
+.dd-earning-val{font-family:'Space Mono',monospace;font-size:17px;font-weight:700;color:var(--accent)}
+.dd-sub-lbl{font-size:10px;color:var(--text-muted)}
+
+/* Delete button */
+.dd-del{position:absolute;top:12px;right:12px;background:none;border:none;color:var(--text-muted);font-size:14px;cursor:pointer;padding:4px;opacity:.3;transition:all .2s}
+.dd-card:hover .dd-del{opacity:.7}
 .dd-del:hover{color:var(--danger);opacity:1}
-.dd-empty{text-align:center;padding:36px 20px;color:var(--text-muted);font-size:13px}
+
+/* Day summary bar */
+.dd-summary{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius);padding:14px 18px;margin-bottom:10px;
+  display:grid;grid-template-columns:repeat(4,1fr);gap:8px;
+  animation:fadeUp .3s ease;
+}
+.dd-summary .ds-item{text-align:center}
+.dd-summary .ds-label{font-size:10px;color:var(--text-muted);margin-bottom:4px;letter-spacing:.3px}
+.dd-summary .ds-val{font-family:'Space Mono',monospace;font-size:14px;font-weight:700}
+.dd-summary .ds-val.gold{color:var(--accent)}
+.dd-summary .ds-val.green{color:var(--success)}
+.dd-summary .ds-val.red{color:var(--danger)}
+.dd-summary .ds-val.blue{color:var(--info)}
+
+.dd-empty{text-align:center;padding:40px 20px;color:var(--text-muted);font-size:13px}
 
 /* Animations */
 @keyframes fadeDown{from{opacity:0;transform:translateY(-16px)}to{opacity:1;transform:translateY(0)}}
 @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideIn{from{opacity:0;transform:translateX(-10px)}to{opacity:1;transform:translateX(0)}}
 .toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--surface-2);border:1px solid var(--border);color:var(--text);padding:10px 22px;border-radius:10px;font-size:13px;z-index:100;transition:transform .3s,opacity .3s;opacity:0;pointer-events:none;max-width:90vw;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,.3)}
 .toast.show{transform:translateX(-50%) translateY(0);opacity:1}
 
@@ -162,7 +203,10 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   .summary-grid{grid-template-columns:repeat(2,1fr)}
   .frow.c3,.frow.c4{grid-template-columns:1fr 1fr}
   .type-tab .tab-text{display:none}
-  .dd-info{font-size:10px}
+  .dd-summary{grid-template-columns:repeat(2,1fr)}
+  .dd-card{grid-template-columns:1fr}
+  .dd-right{flex-direction:row;gap:12px;text-align:left;padding-left:10px;padding-top:8px;border-top:1px solid var(--border)}
+  .dd-del{top:8px;right:8px;opacity:.6}
 }
 </style>
 </head>
@@ -174,7 +218,6 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     <h1>工时记录</h1>
   </div>
 
-  <!-- Summary -->
   <div class="summary-grid">
     <div class="summary-card accent-gold"><div class="label">本月工时</div><div class="value" id="sH">0.0</div><div class="unit">小时</div></div>
     <div class="summary-card accent-green"><div class="label">本月收入</div><div class="value" id="sE">0</div><div class="unit">元</div></div>
@@ -182,17 +225,15 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     <div class="summary-card accent-blue"><div class="label">打卡天数</div><div class="value" id="sD">0</div><div class="unit">天</div></div>
   </div>
 
-  <!-- Form Section — Original -->
+  <!-- Form -->
   <div class="form-section">
     <h2 id="fTitle">新增打卡</h2>
-
     <div class="type-tabs">
-      <div class="type-tab active" data-type="normal" onclick="swType('normal')"><span class="tab-icon">&#9201;</span> <span class="tab-text">正常打卡</span></div>
-      <div class="type-tab" data-type="tiaoxiu" onclick="swType('tiaoxiu')"><span class="tab-icon">&#127881;</span> <span class="tab-text">调休</span></div>
-      <div class="type-tab" data-type="zhuanban" onclick="swType('zhuanban')"><span class="tab-icon">&#128260;</span> <span class="tab-text">转班</span></div>
+      <div class="type-tab active" data-type="normal" onclick="swType('normal')"><span>&#9201;</span> <span class="tab-text">正常打卡</span></div>
+      <div class="type-tab" data-type="tiaoxiu" onclick="swType('tiaoxiu')"><span>&#127881;</span> <span class="tab-text">调休</span></div>
+      <div class="type-tab" data-type="zhuanban" onclick="swType('zhuanban')"><span>&#128260;</span> <span class="tab-text">转班</span></div>
     </div>
 
-    <!-- Normal -->
     <div id="fNormal">
       <div class="frow c3">
         <div class="fg"><label>日期</label><input type="date" id="nDate"></div>
@@ -226,7 +267,6 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       </div>
     </div>
 
-    <!-- Tiaoxiu -->
     <div id="fTx" class="hidden">
       <div class="info-box"><strong>调休</strong>：因加班、节假日值班等获得的补偿休息日。</div>
       <div class="frow c3">
@@ -239,7 +279,6 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       </div>
     </div>
 
-    <!-- Zhuanban -->
     <div id="fZb" class="hidden">
       <div class="info-box info-blue"><strong>转班</strong>：将工作日调整到其他日期，照常计算工时收入。</div>
       <div class="frow c3">
@@ -260,7 +299,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     </div>
   </div>
 
-  <!-- Calendar -->
+  <!-- Calendar + Detail -->
   <div class="cal-section">
     <div class="cal-wrap">
       <div class="cal-nav">
@@ -291,7 +330,6 @@ let calY,calM,selDate=null;
 const now=new Date(),todayStr=fmt(now);
 calY=now.getFullYear();calM=now.getMonth();
 
-// Init
 document.getElementById('nDate').value=todayStr;
 document.getElementById('txDate').value=todayStr;
 document.getElementById('zbDate').value=todayStr;
@@ -301,15 +339,13 @@ if(sr){document.getElementById('nRate').value=sr;document.getElementById('zbRate
 function fmt(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
 function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200);}
 
-// Type switch
 function swType(t){
   document.querySelectorAll('.type-tab').forEach(el=>el.classList.toggle('active',el.dataset.type===t));
   document.getElementById('fNormal').classList.toggle('hidden',t!=='normal');
   document.getElementById('fTx').classList.toggle('hidden',t!=='tiaoxiu');
   document.getElementById('fZb').classList.toggle('hidden',t!=='zhuanban');
-  const ft=document.getElementById('fTitle');
-  ft.className='';
-  if(t==='normal'){ft.textContent='新增打卡';}
+  const ft=document.getElementById('fTitle');ft.className='';
+  if(t==='normal')ft.textContent='新增打卡';
   if(t==='tiaoxiu'){ft.textContent='记录调休';ft.classList.add('type-tx');}
   if(t==='zhuanban'){ft.textContent='记录转班';ft.classList.add('type-zb');}
 }
@@ -327,11 +363,9 @@ function fillNow(x){
   toast('已填充当前时间');
 }
 
-// Calc
 function calcRaw(s,e){const[a,b]=s.split(':').map(Number);const[c,d]=e.split(':').map(Number);let m=(c*60+d)-(a*60+b);if(m<0)m+=1440;return m;}
-function fmtBrk(m){if(m===0)return'无休息';if(m<60)return m+'分钟';const h=Math.floor(m/60),r=m%60;return r?h+'h'+r+'m':h+'h';}
+function fmtBrk(m){if(m===0)return'无休息';if(m<60)return m+'分钟';const h=Math.floor(m/60),r=m%60;return r?h+'小时'+r+'分':h+'小时';}
 
-// Add
 function addNormal(){
   const date=document.getElementById('nDate').value,start=document.getElementById('nStart').value,end=document.getElementById('nEnd').value;
   const brk=parseInt(document.getElementById('nBreak').value)||0,rate=parseFloat(document.getElementById('nRate').value),note=document.getElementById('nNote').value.trim();
@@ -376,20 +410,15 @@ function renderCal(){
   let startDay=first.getDay()-1;if(startDay<0)startDay=6;
   const container=document.getElementById('calDays');
   let html='';
-
-  // Prev month
   const prevLast=new Date(calY,calM,0).getDate();
   for(let i=startDay-1;i>=0;i--){
     const d=prevLast-i,m=calM===0?12:calM,y=calM===0?calY-1:calY;
     const ds=y+'-'+String(m).padStart(2,'0')+'-'+String(d).padStart(2,'0');
     html+=`<div class="cal-day other" onclick="pickDay('${ds}')">${d}</div>`;
   }
-
-  // Current month
   for(let d=1;d<=total;d++){
     const ds=calY+'-'+String(calM+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');
-    const isToday=ds===todayStr,isSel=ds===selDate;
-    const recs=records.filter(r=>r.date===ds);
+    const isToday=ds===todayStr,isSel=ds===selDate,recs=records.filter(r=>r.date===ds);
     let dots='';
     if(recs.length){
       dots='<div class="dots">';
@@ -398,14 +427,9 @@ function renderCal(){
       if(recs.some(r=>r.type==='zhuanban'))dots+='<span class="dot d-z"></span>';
       dots+='</div>';
     }
-    const cls=['cal-day'];
-    if(isToday)cls.push('today');
-    if(isSel)cls.push('selected');
-    if(recs.length)cls.push('has-rec');
+    const cls=['cal-day'];if(isToday)cls.push('today');if(isSel)cls.push('selected');if(recs.length)cls.push('has-rec');
     html+=`<div class="${cls.join(' ')}" onclick="pickDay('${ds}')">${d}${dots}</div>`;
   }
-
-  // Next month
   const totalCells=startDay+total,rem=totalCells%7===0?0:7-totalCells%7;
   for(let d=1;d<=rem;d++){
     const m=calM===11?1:calM+2,y=calM===11?calY+1:calY;
@@ -422,22 +446,87 @@ function renderDetail(){
   const dt=new Date(selDate+'T00:00:00'),wk=WD[dt.getDay()],ds=selDate.replace(/-/g,' / ');
   const dw=recs.filter(r=>r.type!=='tiaoxiu');
   const dH=dw.reduce((s,r)=>s+r.hours,0),dE=dw.reduce((s,r)=>s+r.earning,0);
+  const dBrk=dw.reduce((s,r)=>s+(r.breakMin||0),0);
+  const dRaw=dw.reduce((s,r)=>s+(r.rawMins||0),0);
 
   let h=`<div class="dd-header"><div><span class="dd-date">${ds}</span><span class="dd-weekday">${wk}</span></div>`;
-  if(recs.length)h+=`<div class="dd-total"><span>${dH.toFixed(1)}h</span><span>¥${dE.toFixed(0)}</span></div>`;
+  if(recs.length)h+=`<div class="dd-total"><span>共 ${dH.toFixed(1)}h</span><span>¥${dE.toFixed(0)}</span></div>`;
   h+='</div>';
 
   if(!recs.length){
     h+=`<div class="dd-empty"><div style="font-size:24px;margin-bottom:6px;opacity:.3">&#128197;</div>这天还没有记录</div>`;
   } else {
-    recs.forEach(r=>{
+    // Day summary bar
+    if(dw.length>1){
+      h+=`<div class="dd-summary">
+        <div class="ds-item"><div class="ds-label">实际工时</div><div class="ds-val gold">${dH.toFixed(1)}h</div></div>
+        <div class="ds-item"><div class="ds-label">收入合计</div><div class="ds-val green">¥${dE.toFixed(0)}</div></div>
+        <div class="ds-item"><div class="ds-label">休息扣除</div><div class="ds-val red">${fmtBrk(dBrk)}</div></div>
+        <div class="ds-item"><div class="ds-label">在岗时长</div><div class="ds-val blue">${(dRaw/60).toFixed(1)}h</div></div>
+      </div>`;
+    }
+
+    recs.forEach((r,idx)=>{
+      const rawH=(r.rawMins/60).toFixed(1);
+
       if(r.type==='tiaoxiu'){
-        h+=`<div class="dd-card t-t"><div class="dd-left"><div class="dd-type c-p">调休${r.reason?' · '+r.reason:''}</div><div class="dd-info"><span>${r.hours} 小时</span></div></div><div class="dd-right"><div class="dd-hours" style="color:var(--purple)">${r.hours}h</div><div class="dd-lbl">调休</div></div><button class="dd-del" onclick="del(${r.id})">&#10005;</button></div>`;
-      } else {
-        const isZ=r.type==='zhuanban';
-        const tags=[`${r.start}-${r.end}`,`${(r.rawMins/60).toFixed(1)}h`,r.breakMin>0?'-'+fmtBrk(r.breakMin):'',`¥${r.rate}/h`,r.origDate?'原休 '+r.origDate.replace(/-/g,'/'):'',r.note||''].filter(Boolean);
-        h+=`<div class="dd-card ${isZ?'t-z':'t-n'}"><div class="dd-left"><div class="dd-type ${isZ?'c-b':'c-g'}">${isZ?'转班':'打卡'}</div><div class="dd-info">${tags.map(t=>'<span>'+t+'</span>').join('<span class="sep">·</span>')}</div></div><div class="dd-right"><div class="dd-hours">${r.hours.toFixed(1)}h</div><div class="dd-earning">¥${r.earning.toFixed(0)}</div></div><button class="dd-del" onclick="del(${r.id})">&#10005;</button></div>`;
+        h+=`<div class="dd-card t-t" style="animation-delay:${idx*.06}s">
+          <div class="dd-card-body">
+            <div class="dd-type-row">
+              <span class="dd-type-label c-p">调休</span>
+              <span class="dd-weekday-sm">${wk}</span>
+            </div>
+            <div class="dd-detail-row">
+              <span class="dd-badge badge-tx">${r.hours} 小时</span>
+              ${r.reason?`<span class="dd-badge badge-note">${r.reason}</span>`:''}
+            </div>
+          </div>
+          <div class="dd-right">
+            <div class="dd-hours-val" style="color:var(--purple)">${r.hours}h</div>
+            <div class="dd-sub-lbl">调休</div>
+          </div>
+          <button class="dd-del" onclick="del(${r.id})">&#10005;</button>
+        </div>`;
+        return;
       }
+
+      const isZ=r.type==='zhuanban';
+      const typeLabel=isZ?'转班':'打卡';
+      const typeColor=isZ?'c-b':'c-g';
+      const cardType=isZ?'t-z':'t-n';
+
+      // Build badges
+      let badges='';
+      // Time
+      badges+=`<span class="dd-time">${r.start} <span class="arrow">→</span> ${r.end}</span>`;
+      // Total raw
+      badges+=`<span class="dd-badge">${rawH}h 总时</span>`;
+      // Break
+      if(r.breakMin>0) badges+=`<span class="dd-badge badge-deduct">-${fmtBrk(r.breakMin)}</span>`;
+      else badges+=`<span class="dd-badge badge-rest">无休息</span>`;
+      // Rate
+      badges+=`<span class="dd-badge">¥${r.rate}/h</span>`;
+      // Zhuanban type badge
+      if(isZ) badges+=`<span class="dd-badge badge-zb">转班</span>`;
+      // Orig date
+      if(r.origDate) badges+=`<span class="dd-badge badge-orig">原休 ${r.origDate.replace(/-/g,'/')}</span>`;
+      // Note
+      if(r.note) badges+=`<span class="dd-badge badge-note">${r.note}</span>`;
+
+      h+=`<div class="dd-card ${cardType}" style="animation-delay:${idx*.06}s">
+        <div class="dd-card-body">
+          <div class="dd-type-row">
+            <span class="dd-type-label ${typeColor}">${typeLabel}</span>
+          </div>
+          <div class="dd-detail-row">${badges}</div>
+        </div>
+        <div class="dd-right">
+          <div class="dd-hours-val">${r.hours.toFixed(1)}h</div>
+          <div class="dd-earning-val">¥${r.earning.toFixed(2)}</div>
+          <div class="dd-sub-lbl">实际 · 收入</div>
+        </div>
+        <button class="dd-del" onclick="del(${r.id})">&#10005;</button>
+      </div>`;
     });
   }
   dd.innerHTML=h;dd.classList.remove('hidden');
