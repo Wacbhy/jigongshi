@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#d4a843">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>工时记录</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#121218;
+  --surface:#1e1e28;
+  --surface-2:#282836;
+  --surface-3:#32324a;
+  --border:#3a3a50;
+  --accent:#f0c040;
+  --accent-dim:#a08030;
+  --accent-glow:rgba(240,192,64,0.18);
+  --text:#f4f0e8;
+  --text-muted:#9a96a8;
+  --success:#5edc80;
+  --danger:#f06060;
+  --info:#6ab0f8;
+  --purple:#c090f0;
+  --radius:12px;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:'Noto Sans SC',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 15%,rgba(240,192,64,0.06) 0%,transparent 55%),radial-gradient(ellipse at 80% 85%,rgba(106,176,248,0.04) 0%,transparent 55%);pointer-events:none;z-index:0}
+.app{position:relative;z-index:1;max-width:880px;margin:0 auto;padding:24px 16px 100px}
+
+/* Header */
+.header{text-align:center;margin-bottom:32px;animation:fadeDown .6s ease}
+.header-icon{width:48px;height:48px;background:linear-gradient(135deg,var(--accent),#d4a020);border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:22px;box-shadow:0 8px 28px rgba(240,192,64,0.25)}
+.header h1{font-size:22px;font-weight:700;letter-spacing:-0.5px}
+
+/* Summary */
+.summary-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:28px;animation:fadeUp .6s ease .1s both}
+.summary-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 8px;text-align:center;position:relative;overflow:hidden;transition:border-color .3s,transform .2s}
+.summary-card::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--card-accent,var(--accent));opacity:.6}
+.summary-card:hover{border-color:var(--accent-dim);transform:translateY(-1px)}
+.summary-card .label{font-size:10px;color:var(--text-muted);letter-spacing:.5px;margin-bottom:6px}
+.summary-card .value{font-family:'Space Mono',monospace;font-size:20px;font-weight:700;color:var(--card-accent,var(--accent))}
+.summary-card .unit{font-size:11px;color:var(--text-muted)}
+.accent-gold{--card-accent:var(--accent)}.accent-green{--card-accent:var(--success)}
+.accent-blue{--card-accent:var(--info)}.accent-purple{--card-accent:var(--purple)}
+
+/* Form Section — Original Style */
+.form-section{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin-bottom:28px;animation:fadeUp .6s ease .15s both}
+.form-section h2{font-size:15px;font-weight:600;margin-bottom:18px;display:flex;align-items:center;gap:8px}
+.form-section h2::before{content:'';width:3px;height:15px;background:var(--accent);border-radius:2px}
+.form-section h2.type-tx::before{background:var(--purple)}
+.form-section h2.type-zb::before{background:var(--info)}
+
+/* Type Tabs */
+.type-tabs{display:flex;gap:0;margin-bottom:18px;background:var(--bg);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.type-tab{flex:1;padding:11px 0;text-align:center;font-size:13px;font-weight:500;color:var(--text-muted);cursor:pointer;transition:all .2s;border-right:1px solid var(--border);user-select:none}
+.type-tab:last-child{border-right:none}
+.type-tab:hover{color:var(--text);background:var(--surface-2)}
+.type-tab.active{color:var(--bg);font-weight:700}
+.type-tab.active[data-type="normal"]{background:var(--accent)}
+.type-tab.active[data-type="tiaoxiu"]{background:var(--purple)}
+.type-tab.active[data-type="zhuanban"]{background:var(--info)}
+
+/* Form rows */
+.frow{display:grid;gap:10px;margin-bottom:10px}
+.frow.c3{grid-template-columns:1fr 1fr 1fr}
+.frow.c4{grid-template-columns:1fr 1fr 1fr 1fr}
+.frow.c2{grid-template-columns:1fr 1fr}
+.fg{display:flex;flex-direction:column;gap:4px}
+.fg label{font-size:11px;color:var(--text-muted);letter-spacing:.3px}
+.fg input{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 12px;color:var(--text);font-family:'Space Mono',monospace;font-size:13px;outline:none;transition:border-color .2s,box-shadow .2s;width:100%}
+.fg input:focus{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-glow)}
+.fg input[type="date"]::-webkit-calendar-picker-indicator,.fg input[type="time"]::-webkit-calendar-picker-indicator{filter:invert(.8);cursor:pointer}
+
+.shift-chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;align-items:center}
+.shift-chips label{font-size:11px;color:var(--text-muted);margin-right:2px}
+.sc{background:var(--surface-2);border:1px solid var(--border);color:var(--text-muted);font-size:11px;padding:5px 12px;border-radius:16px;cursor:pointer;font-family:'Noto Sans SC',sans-serif;transition:all .2s}
+.sc:hover,.sc.on{border-color:var(--accent-dim);color:var(--accent);background:var(--accent-glow)}
+
+.info-box{background:rgba(192,144,240,.06);border:1px solid rgba(192,144,240,.2);border-radius:8px;padding:12px 14px;margin-bottom:14px;font-size:12px;color:var(--text-muted);line-height:1.7}
+.info-box strong{color:var(--purple)}
+.info-box.info-blue{background:rgba(106,176,248,.06);border-color:rgba(106,176,248,.2)}
+.info-box.info-blue strong{color:var(--info)}
+
+.form-actions{display:flex;gap:10px;margin-top:16px}
+.btn{padding:11px 22px;border:none;border-radius:8px;font-family:'Noto Sans SC',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;letter-spacing:.3px}
+.btn-gold{background:linear-gradient(135deg,var(--accent),#d4a020);color:#111;flex:1}
+.btn-gold:hover{box-shadow:0 4px 16px rgba(240,192,64,.35);transform:translateY(-1px)}
+.btn-gold.purple{background:linear-gradient(135deg,var(--purple),#9060d0)}
+.btn-gold.blue{background:linear-gradient(135deg,var(--info),#4090e0)}
+.btn-ghost{background:var(--surface-2);color:var(--text-muted);border:1px solid var(--border)}
+.btn-ghost:hover{color:var(--text);border-color:var(--text-muted)}
+.hidden{display:none !important}
+
+/* Calendar */
+.cal-section{animation:fadeUp .6s ease .2s both}
+.cal-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.cal-nav{display:flex;align-items:center;justify-content:space-between;padding:16px 20px 10px}
+.cal-nav button{background:none;border:none;color:var(--text-muted);font-size:22px;cursor:pointer;padding:4px 12px;border-radius:6px;transition:all .2s}
+.cal-nav button:hover{color:var(--accent);background:var(--surface-2)}
+.cal-title{font-size:15px;font-weight:600;letter-spacing:1px}
+.cal-today-btn{font-size:11px;color:var(--accent);cursor:pointer;background:var(--accent-glow);border:1px solid var(--accent-dim);padding:3px 12px;border-radius:12px;font-family:'Noto Sans SC',sans-serif;font-weight:500;transition:all .2s}
+.cal-today-btn:hover{background:var(--accent);color:var(--bg)}
+.cal-weekdays{display:grid;grid-template-columns:repeat(7,1fr);padding:0 12px 6px;text-align:center}
+.cal-weekdays span{font-size:11px;color:var(--text-muted);font-weight:500}
+.cal-weekdays span:nth-child(6),.cal-weekdays span:nth-child(7){color:var(--danger)}
+.cal-days{display:grid;grid-template-columns:repeat(7,1fr);padding:0 12px 14px;gap:4px}
+.cal-day{aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:10px;cursor:pointer;transition:all .12s;font-size:14px;position:relative;user-select:none}
+.cal-day:hover{background:var(--surface-2)}
+.cal-day.today{font-weight:700;color:var(--accent)}
+.cal-day.today::after{content:'';position:absolute;bottom:4px;width:4px;height:4px;border-radius:50%;background:var(--accent)}
+.cal-day.selected{background:var(--accent)!important;color:#111!important;font-weight:700}
+.cal-day.selected::after{background:#111!important}
+.cal-day.other{color:var(--surface-3);font-size:12px}
+.cal-day .dots{display:flex;gap:2px;margin-top:2px;height:4px;align-items:center}
+.cal-day .dot{width:4px;height:4px;border-radius:50%}
+.dot.d-n{background:var(--accent)}.dot.d-t{background:var(--purple)}.dot.d-z{background:var(--info)}
+.cal-day.has-rec{font-weight:600}
+
+/* Day Detail */
+.day-detail{margin-top:12px;animation:fadeUp .25s ease}
+.day-detail.hidden{display:none}
+.dd-header{display:flex;align-items:center;justify-content:space-between;padding:10px 4px 10px;flex-wrap:wrap;gap:8px}
+.dd-header .dd-date{font-size:15px;font-weight:600}
+.dd-header .dd-weekday{color:var(--text-muted);font-size:13px;margin-left:8px}
+.dd-header .dd-total{font-family:'Space Mono',monospace;font-size:13px;color:var(--accent);display:flex;gap:12px}
+.dd-header .dd-total span{white-space:nowrap}
+
+.dd-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:8px;display:flex;align-items:center;gap:12px;position:relative;transition:border-color .2s}
+.dd-card::before{content:'';position:absolute;left:0;top:10px;bottom:10px;width:3px;border-radius:0 2px 2px 0}
+.dd-card.t-n::before{background:var(--accent)}
+.dd-card.t-t::before{background:var(--purple)}
+.dd-card.t-z::before{background:var(--info)}
+.dd-card:hover{border-color:var(--accent-dim)}
+.dd-left{padding-left:10px;flex:1;min-width:0}
+.dd-type{font-size:12px;font-weight:600;margin-bottom:4px}
+.dd-type.c-g{color:var(--accent)}.dd-type.c-p{color:var(--purple)}.dd-type.c-b{color:var(--info)}
+.dd-info{font-size:11px;color:var(--text-muted);display:flex;gap:6px;flex-wrap:wrap;align-items:center;line-height:1.6}
+.dd-info .sep{color:var(--border);font-size:10px}
+.dd-right{text-align:right;min-width:72px}
+.dd-hours{font-family:'Space Mono',monospace;font-size:16px;font-weight:700}
+.dd-earning{font-family:'Space Mono',monospace;font-size:16px;font-weight:700;color:var(--accent)}
+.dd-lbl{font-size:10px;color:var(--text-muted)}
+.dd-del{background:none;border:none;color:var(--text-muted);font-size:14px;cursor:pointer;padding:4px;opacity:.35;transition:all .2s;flex-shrink:0}
+.dd-del:hover{color:var(--danger);opacity:1}
+.dd-empty{text-align:center;padding:36px 20px;color:var(--text-muted);font-size:13px}
+
+/* Animations */
+@keyframes fadeDown{from{opacity:0;transform:translateY(-16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--surface-2);border:1px solid var(--border);color:var(--text);padding:10px 22px;border-radius:10px;font-size:13px;z-index:100;transition:transform .3s,opacity .3s;opacity:0;pointer-events:none;max-width:90vw;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,.3)}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+
+@media(max-width:600px){
+  .app{padding:16px 12px 80px}
+  .summary-grid{grid-template-columns:repeat(2,1fr)}
+  .frow.c3,.frow.c4{grid-template-columns:1fr 1fr}
+  .type-tab .tab-text{display:none}
+  .dd-info{font-size:10px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <div class="header">
+    <div class="header-icon">&#9201;</div>
+    <h1>工时记录</h1>
+  </div>
+
+  <!-- Summary -->
+  <div class="summary-grid">
+    <div class="summary-card accent-gold"><div class="label">本月工时</div><div class="value" id="sH">0.0</div><div class="unit">小时</div></div>
+    <div class="summary-card accent-green"><div class="label">本月收入</div><div class="value" id="sE">0</div><div class="unit">元</div></div>
+    <div class="summary-card accent-purple"><div class="label">调休/转班</div><div class="value" id="sS">0</div><div class="unit">天</div></div>
+    <div class="summary-card accent-blue"><div class="label">打卡天数</div><div class="value" id="sD">0</div><div class="unit">天</div></div>
+  </div>
+
+  <!-- Form Section — Original -->
+  <div class="form-section">
+    <h2 id="fTitle">新增打卡</h2>
+
+    <div class="type-tabs">
+      <div class="type-tab active" data-type="normal" onclick="swType('normal')"><span class="tab-icon">&#9201;</span> <span class="tab-text">正常打卡</span></div>
+      <div class="type-tab" data-type="tiaoxiu" onclick="swType('tiaoxiu')"><span class="tab-icon">&#127881;</span> <span class="tab-text">调休</span></div>
+      <div class="type-tab" data-type="zhuanban" onclick="swType('zhuanban')"><span class="tab-icon">&#128260;</span> <span class="tab-text">转班</span></div>
+    </div>
+
+    <!-- Normal -->
+    <div id="fNormal">
+      <div class="frow c3">
+        <div class="fg"><label>日期</label><input type="date" id="nDate"></div>
+        <div class="fg"><label>上班时间</label><input type="time" id="nStart" value="09:00"></div>
+        <div class="fg"><label>下班时间</label><input type="time" id="nEnd" value="18:00"></div>
+      </div>
+      <div class="shift-chips">
+        <label>班次</label>
+        <span class="sc" onclick="setShift('09:00','18:00')">标准 9-18</span>
+        <span class="sc" onclick="setShift('08:00','17:00')">早班 8-17</span>
+        <span class="sc" onclick="setShift('10:00','19:00')">晚班 10-19</span>
+        <span class="sc" onclick="setShift('09:00','21:00')">加班 9-21</span>
+      </div>
+      <div class="frow c4">
+        <div class="fg"><label>用餐休息（分钟）</label><input type="number" id="nBreak" value="60" min="0" step="15"></div>
+        <div class="fg"><label>时薪（元/小时）</label><input type="number" id="nRate" placeholder="例: 50" min="0" step="0.5"></div>
+        <div class="fg"><label>备注（可选）</label><input type="text" id="nNote" placeholder="例: 正常班"></div>
+        <div class="fg" style="justify-content:flex-end">
+          <div class="shift-chips" style="margin:0">
+            <span class="sc brk on" onclick="setBrk(60)">1小时</span>
+            <span class="sc brk" onclick="setBrk(0)">无休</span>
+            <span class="sc brk" onclick="setBrk(30)">30分</span>
+            <span class="sc brk" onclick="setBrk(90)">1.5时</span>
+            <span class="sc brk" onclick="setBrk(120)">2小时</span>
+          </div>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button class="btn btn-gold" onclick="addNormal()">记录打卡</button>
+        <button class="btn btn-ghost" onclick="fillNow('n')">填充当前时间</button>
+      </div>
+    </div>
+
+    <!-- Tiaoxiu -->
+    <div id="fTx" class="hidden">
+      <div class="info-box"><strong>调休</strong>：因加班、节假日值班等获得的补偿休息日。</div>
+      <div class="frow c3">
+        <div class="fg"><label>调休日期</label><input type="date" id="txDate"></div>
+        <div class="fg"><label>调休时长（小时）</label><input type="number" id="txHours" value="8" min="0.5" step="0.5"></div>
+        <div class="fg"><label>来源 / 原因</label><input type="text" id="txReason" placeholder="例: 上周六加班"></div>
+      </div>
+      <div class="form-actions">
+        <button class="btn btn-gold purple" onclick="addTx()">记录调休</button>
+      </div>
+    </div>
+
+    <!-- Zhuanban -->
+    <div id="fZb" class="hidden">
+      <div class="info-box info-blue"><strong>转班</strong>：将工作日调整到其他日期，照常计算工时收入。</div>
+      <div class="frow c3">
+        <div class="fg"><label>转班日期</label><input type="date" id="zbDate"></div>
+        <div class="fg"><label>上班时间</label><input type="time" id="zbStart" value="09:00"></div>
+        <div class="fg"><label>下班时间</label><input type="time" id="zbEnd" value="18:00"></div>
+      </div>
+      <div class="frow c4">
+        <div class="fg"><label>用餐休息（分钟）</label><input type="number" id="zbBreak" value="60" min="0" step="15"></div>
+        <div class="fg"><label>时薪（元/小时）</label><input type="number" id="zbRate" placeholder="例: 50" min="0" step="0.5"></div>
+        <div class="fg"><label>原应休日期</label><input type="date" id="zbOrig"></div>
+        <div class="fg"><label>备注</label><input type="text" id="zbNote" placeholder="例: 周六转班"></div>
+      </div>
+      <div class="form-actions">
+        <button class="btn btn-gold blue" onclick="addZb()">记录转班</button>
+        <button class="btn btn-ghost" onclick="fillNow('z')">填充当前时间</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Calendar -->
+  <div class="cal-section">
+    <div class="cal-wrap">
+      <div class="cal-nav">
+        <button onclick="calNav(-1)">&#8249;</button>
+        <span class="cal-title" id="calTitle"></span>
+        <button onclick="calNav(1)">&#8250;</button>
+      </div>
+      <div style="text-align:center;padding-bottom:6px">
+        <button class="cal-today-btn" onclick="goToday()">今天</button>
+      </div>
+      <div class="cal-weekdays">
+        <span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span><span>日</span>
+      </div>
+      <div class="cal-days" id="calDays"></div>
+    </div>
+    <div class="day-detail hidden" id="dayDetail"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const WD=['周日','周一','周二','周三','周四','周五','周六'];
+let records=JSON.parse(localStorage.getItem('workRecordsV3')||'[]');
+records=records.map(r=>({...r,type:r.type||'normal',breakMin:r.breakMin!==undefined?r.breakMin:60}));
+
+let calY,calM,selDate=null;
+const now=new Date(),todayStr=fmt(now);
+calY=now.getFullYear();calM=now.getMonth();
+
+// Init
+document.getElementById('nDate').value=todayStr;
+document.getElementById('txDate').value=todayStr;
+document.getElementById('zbDate').value=todayStr;
+const sr=localStorage.getItem('workRate');
+if(sr){document.getElementById('nRate').value=sr;document.getElementById('zbRate').value=sr;}
+
+function fmt(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200);}
+
+// Type switch
+function swType(t){
+  document.querySelectorAll('.type-tab').forEach(el=>el.classList.toggle('active',el.dataset.type===t));
+  document.getElementById('fNormal').classList.toggle('hidden',t!=='normal');
+  document.getElementById('fTx').classList.toggle('hidden',t!=='tiaoxiu');
+  document.getElementById('fZb').classList.toggle('hidden',t!=='zhuanban');
+  const ft=document.getElementById('fTitle');
+  ft.className='';
+  if(t==='normal'){ft.textContent='新增打卡';}
+  if(t==='tiaoxiu'){ft.textContent='记录调休';ft.classList.add('type-tx');}
+  if(t==='zhuanban'){ft.textContent='记录转班';ft.classList.add('type-zb');}
+}
+
+function setShift(s,e){document.getElementById('nStart').value=s;document.getElementById('nEnd').value=e;}
+function setBrk(m){
+  document.getElementById('nBreak').value=m;
+  const map={'无休':0,'30分':30,'1小时':60,'1.5时':90,'2小时':120};
+  document.querySelectorAll('.brk').forEach(el=>el.classList.toggle('on',map[el.textContent]===m));
+}
+function fillNow(x){
+  const hm=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
+  if(x==='n'){document.getElementById('nEnd').value=hm;document.getElementById('nDate').value=todayStr;}
+  if(x==='z'){document.getElementById('zbEnd').value=hm;document.getElementById('zbDate').value=todayStr;}
+  toast('已填充当前时间');
+}
+
+// Calc
+function calcRaw(s,e){const[a,b]=s.split(':').map(Number);const[c,d]=e.split(':').map(Number);let m=(c*60+d)-(a*60+b);if(m<0)m+=1440;return m;}
+function fmtBrk(m){if(m===0)return'无休息';if(m<60)return m+'分钟';const h=Math.floor(m/60),r=m%60;return r?h+'h'+r+'m':h+'h';}
+
+// Add
+function addNormal(){
+  const date=document.getElementById('nDate').value,start=document.getElementById('nStart').value,end=document.getElementById('nEnd').value;
+  const brk=parseInt(document.getElementById('nBreak').value)||0,rate=parseFloat(document.getElementById('nRate').value),note=document.getElementById('nNote').value.trim();
+  if(!date||!start||!end)return toast('请填写完整');
+  if(!rate||rate<=0)return toast('请填写时薪');
+  localStorage.setItem('workRate',rate);
+  const raw=calcRaw(start,end);if(brk>=raw)return toast('休息不能超过工时');
+  const wm=raw-brk,h=Math.round(wm/60*100)/100,earn=Math.round(h*rate*100)/100;
+  records.push({id:Date.now(),type:'normal',date,start,end,breakMin:brk,rawMins:raw,workMins:wm,hours:h,rate,earning:earn,note});
+  done(date,`实际 ${h}h，收入 ¥${earn.toFixed(2)}`);document.getElementById('nNote').value='';
+}
+function addTx(){
+  const date=document.getElementById('txDate').value,hours=parseFloat(document.getElementById('txHours').value),reason=document.getElementById('txReason').value.trim();
+  if(!date||!hours)return toast('请填写完整');
+  records.push({id:Date.now(),type:'tiaoxiu',date,hours,reason,start:'',end:'',breakMin:0,rawMins:0,workMins:0,rate:0,earning:0,note:''});
+  done(date,`调休 ${hours}h`);document.getElementById('txReason').value='';
+}
+function addZb(){
+  const date=document.getElementById('zbDate').value,start=document.getElementById('zbStart').value,end=document.getElementById('zbEnd').value;
+  const brk=parseInt(document.getElementById('zbBreak').value)||0,rate=parseFloat(document.getElementById('zbRate').value);
+  const orig=document.getElementById('zbOrig').value,note=document.getElementById('zbNote').value.trim();
+  if(!date||!start||!end)return toast('请填写完整');
+  if(!rate||rate<=0)return toast('请填写时薪');
+  localStorage.setItem('workRate',rate);
+  const raw=calcRaw(start,end);if(brk>=raw)return toast('休息不能超过工时');
+  const wm=raw-brk,h=Math.round(wm/60*100)/100,earn=Math.round(h*rate*100)/100;
+  records.push({id:Date.now(),type:'zhuanban',date,start,end,breakMin:brk,rawMins:raw,workMins:wm,hours:h,rate,earning:earn,origDate:orig||'',note});
+  done(date,`转班 ${h}h，¥${earn.toFixed(2)}`);document.getElementById('zbNote').value='';document.getElementById('zbOrig').value='';
+}
+function done(date,msg){records.sort((a,b)=>b.date.localeCompare(a.date)||b.id-a.id);save();selDate=date;render();toast(msg);}
+function del(id){records=records.filter(r=>r.id!==id);save();render();toast('已删除');}
+function save(){localStorage.setItem('workRecordsV3',JSON.stringify(records));}
+
+// Calendar
+function calNav(d){calM+=d;if(calM<0){calM=11;calY--;}if(calM>11){calM=0;calY++;}selDate=null;render();}
+function goToday(){calY=now.getFullYear();calM=now.getMonth();selDate=todayStr;render();setTimeout(()=>{document.getElementById('dayDetail')?.scrollIntoView({behavior:'smooth',block:'nearest'});},80);}
+function pickDay(ds){selDate=ds;render();setTimeout(()=>{document.getElementById('dayDetail')?.scrollIntoView({behavior:'smooth',block:'nearest'});},80);}
+
+function renderCal(){
+  document.getElementById('calTitle').textContent=calY+'年'+(calM+1)+'月';
+  const first=new Date(calY,calM,1),last=new Date(calY,calM+1,0),total=last.getDate();
+  let startDay=first.getDay()-1;if(startDay<0)startDay=6;
+  const container=document.getElementById('calDays');
+  let html='';
+
+  // Prev month
+  const prevLast=new Date(calY,calM,0).getDate();
+  for(let i=startDay-1;i>=0;i--){
+    const d=prevLast-i,m=calM===0?12:calM,y=calM===0?calY-1:calY;
+    const ds=y+'-'+String(m).padStart(2,'0')+'-'+String(d).padStart(2,'0');
+    html+=`<div class="cal-day other" onclick="pickDay('${ds}')">${d}</div>`;
+  }
+
+  // Current month
+  for(let d=1;d<=total;d++){
+    const ds=calY+'-'+String(calM+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');
+    const isToday=ds===todayStr,isSel=ds===selDate;
+    const recs=records.filter(r=>r.date===ds);
+    let dots='';
+    if(recs.length){
+      dots='<div class="dots">';
+      if(recs.some(r=>r.type==='normal'))dots+='<span class="dot d-n"></span>';
+      if(recs.some(r=>r.type==='tiaoxiu'))dots+='<span class="dot d-t"></span>';
+      if(recs.some(r=>r.type==='zhuanban'))dots+='<span class="dot d-z"></span>';
+      dots+='</div>';
+    }
+    const cls=['cal-day'];
+    if(isToday)cls.push('today');
+    if(isSel)cls.push('selected');
+    if(recs.length)cls.push('has-rec');
+    html+=`<div class="${cls.join(' ')}" onclick="pickDay('${ds}')">${d}${dots}</div>`;
+  }
+
+  // Next month
+  const totalCells=startDay+total,rem=totalCells%7===0?0:7-totalCells%7;
+  for(let d=1;d<=rem;d++){
+    const m=calM===11?1:calM+2,y=calM===11?calY+1:calY;
+    const ds=y+'-'+String(m).padStart(2,'0')+'-'+String(d).padStart(2,'0');
+    html+=`<div class="cal-day other" onclick="pickDay('${ds}')">${d}</div>`;
+  }
+  container.innerHTML=html;
+}
+
+function renderDetail(){
+  const dd=document.getElementById('dayDetail');
+  if(!selDate){dd.classList.add('hidden');return;}
+  const recs=records.filter(r=>r.date===selDate);
+  const dt=new Date(selDate+'T00:00:00'),wk=WD[dt.getDay()],ds=selDate.replace(/-/g,' / ');
+  const dw=recs.filter(r=>r.type!=='tiaoxiu');
+  const dH=dw.reduce((s,r)=>s+r.hours,0),dE=dw.reduce((s,r)=>s+r.earning,0);
+
+  let h=`<div class="dd-header"><div><span class="dd-date">${ds}</span><span class="dd-weekday">${wk}</span></div>`;
+  if(recs.length)h+=`<div class="dd-total"><span>${dH.toFixed(1)}h</span><span>¥${dE.toFixed(0)}</span></div>`;
+  h+='</div>';
+
+  if(!recs.length){
+    h+=`<div class="dd-empty"><div style="font-size:24px;margin-bottom:6px;opacity:.3">&#128197;</div>这天还没有记录</div>`;
+  } else {
+    recs.forEach(r=>{
+      if(r.type==='tiaoxiu'){
+        h+=`<div class="dd-card t-t"><div class="dd-left"><div class="dd-type c-p">调休${r.reason?' · '+r.reason:''}</div><div class="dd-info"><span>${r.hours} 小时</span></div></div><div class="dd-right"><div class="dd-hours" style="color:var(--purple)">${r.hours}h</div><div class="dd-lbl">调休</div></div><button class="dd-del" onclick="del(${r.id})">&#10005;</button></div>`;
+      } else {
+        const isZ=r.type==='zhuanban';
+        const tags=[`${r.start}-${r.end}`,`${(r.rawMins/60).toFixed(1)}h`,r.breakMin>0?'-'+fmtBrk(r.breakMin):'',`¥${r.rate}/h`,r.origDate?'原休 '+r.origDate.replace(/-/g,'/'):'',r.note||''].filter(Boolean);
+        h+=`<div class="dd-card ${isZ?'t-z':'t-n'}"><div class="dd-left"><div class="dd-type ${isZ?'c-b':'c-g'}">${isZ?'转班':'打卡'}</div><div class="dd-info">${tags.map(t=>'<span>'+t+'</span>').join('<span class="sep">·</span>')}</div></div><div class="dd-right"><div class="dd-hours">${r.hours.toFixed(1)}h</div><div class="dd-earning">¥${r.earning.toFixed(0)}</div></div><button class="dd-del" onclick="del(${r.id})">&#10005;</button></div>`;
+      }
+    });
+  }
+  dd.innerHTML=h;dd.classList.remove('hidden');
+}
+
+function renderSummary(){
+  const ym=calY+'-'+String(calM+1).padStart(2,'0');
+  const mr=records.filter(r=>r.date.startsWith(ym)),mw=mr.filter(r=>r.type!=='tiaoxiu'),ms=mr.filter(r=>r.type==='tiaoxiu'||r.type==='zhuanban');
+  document.getElementById('sH').textContent=mw.reduce((s,r)=>s+r.hours,0).toFixed(1);
+  document.getElementById('sE').textContent=mw.reduce((s,r)=>s+r.earning,0).toFixed(0);
+  document.getElementById('sS').textContent=ms.length;
+  document.getElementById('sD').textContent=mr.length;
+}
+
+function render(){renderCal();renderDetail();renderSummary();}
+document.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.ctrlKey){const at=document.querySelector('.type-tab.active')?.dataset.type;if(at==='normal')addNormal();if(at==='tiaoxiu')addTx();if(at==='zhuanban')addZb();}});
+render();
+</script>
+</body>
+</html>
